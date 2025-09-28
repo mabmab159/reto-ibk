@@ -2,6 +2,8 @@ package mabmab.retoibk.reto.domain.services;
 
 import mabmab.retoibk.reto.domain.models.Producto;
 import mabmab.retoibk.reto.domain.ports.out.ProductoRepositoryPort;
+
+import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,8 +32,8 @@ class ProductoServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        producto = new Producto(1L, "Laptop", 1500L, 10);
-        existingProducto = new Producto(1L, "Old Laptop", 1000L, 5);
+        producto = new Producto(1L, "Laptop", new BigDecimal("1500"), 10, 1L);
+        existingProducto = new Producto(1L, "Old Laptop", new BigDecimal("1000"), 5, 1L);
     }
 
     @Test
@@ -76,7 +78,7 @@ class ProductoServiceImplTest {
                 .expectNextMatches(updated -> 
                     updated.getNombre().equals(producto.getNombre()) &&
                     updated.getPrecio().equals(producto.getPrecio()) &&
-                    updated.getCantidad() == producto.getCantidad()
+                    updated.getStock() == producto.getStock()
                 )
                 .verifyComplete();
 

@@ -22,7 +22,9 @@ public class PedidoControllerMapper {
             null,
             request.getFecha(),
             request.getTotal(),
-            request.isEstado()
+            request.isEstado(),
+            null,
+            null
         );
     }
     
@@ -31,7 +33,9 @@ public class PedidoControllerMapper {
             id,
             request.getFecha(),
             request.getTotal(),
-            request.isEstado()
+            request.isEstado(),
+            null,
+            null
         );
     }
 }

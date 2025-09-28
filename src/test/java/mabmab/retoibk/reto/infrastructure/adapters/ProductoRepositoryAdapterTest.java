@@ -2,6 +2,8 @@ package mabmab.retoibk.reto.infrastructure.adapters;
 
 import mabmab.retoibk.reto.domain.models.Producto;
 import mabmab.retoibk.reto.infrastructure.dataproviders.entities.ProductoEntity;
+
+import java.math.BigDecimal;
 import mabmab.retoibk.reto.infrastructure.dataproviders.mappers.ProductoMapper;
 import mabmab.retoibk.reto.infrastructure.dataproviders.repositories.ProductoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,12 +37,12 @@ class ProductoRepositoryAdapterTest {
 
     @BeforeEach
     void setUp() {
-        producto = new Producto(1L, "Laptop", 1500L, 10);
+        producto = new Producto(1L, "Laptop", new BigDecimal("1500"), 10, 1L);
         productoEntity = new ProductoEntity();
         productoEntity.setId(1L);
         productoEntity.setNombre("Laptop");
-        productoEntity.setPrecio(1500L);
-        productoEntity.setCantidad(10);
+        productoEntity.setPrecio(new BigDecimal("1500"));
+        productoEntity.setStock(10);
     }
 
     @Test

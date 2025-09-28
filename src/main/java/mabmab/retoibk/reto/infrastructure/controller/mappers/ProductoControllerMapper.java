@@ -9,19 +9,28 @@ import org.springframework.stereotype.Component;
 public class ProductoControllerMapper {
     
     public ProductoResponse toResponse(Producto producto) {
+        if (producto == null) {
+            throw new IllegalArgumentException("Producto cannot be null");
+        }
         return new ProductoResponse(
             producto.getId(),
             producto.getNombre(),
             producto.getPrecio(),
-            producto.getCantidad()
+            producto.getStock()
         );
     }
     
     public Producto toDomain(ProductoRequest request) {
-        return new Producto(null, request.getNombre(), request.getPrecio(), request.getCantidad());
+        if (request == null) {
+            throw new IllegalArgumentException("ProductoRequest cannot be null");
+        }
+        return new Producto(null, request.getNombre(), request.getPrecio(), request.getStock(), null);
     }
     
     public Producto toDomain(Long id, ProductoRequest request) {
-        return new Producto(id, request.getNombre(), request.getPrecio(), request.getCantidad());
+        if (request == null) {
+            throw new IllegalArgumentException("ProductoRequest cannot be null");
+        }
+        return new Producto(id, request.getNombre(), request.getPrecio(), request.getStock(), null);
     }
 }

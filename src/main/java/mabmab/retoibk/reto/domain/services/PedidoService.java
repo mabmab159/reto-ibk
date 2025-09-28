@@ -13,4 +13,5 @@ public interface PedidoService {
     Mono<Pedido> update(Long id, Pedido pedido);
     Mono<Void> deleteById(Long id);
     Flux<Pedido> findByEstado(boolean estado);
+    Mono<Pedido> confirmarPedido(Long id);
 }

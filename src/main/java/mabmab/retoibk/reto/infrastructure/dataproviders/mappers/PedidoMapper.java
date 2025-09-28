@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 public class PedidoMapper {
     
     public Pedido toDomain(PedidoEntity entity) {
-        return new Pedido(entity.getId(), entity.getFecha(), entity.getTotal(), entity.isEstado());
+        return new Pedido(entity.getId(), entity.getFecha(), entity.getTotal(), entity.isEstado(), null, entity.getVersion());
     }
     
     public PedidoEntity toEntity(Pedido domain) {
-        return new PedidoEntity(domain.getId(), domain.getFecha(), domain.getTotal(), domain.isEstado());
+        return new PedidoEntity(domain.getId(), domain.getFecha(), domain.getTotal(), domain.isEstado(), domain.getVersion());
     }
 }

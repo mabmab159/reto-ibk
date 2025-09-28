@@ -2,6 +2,7 @@ package mabmab.retoibk.reto.infrastructure.controller.dto;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,10 +12,10 @@ class PedidoRequestTest {
     @Test
     void constructor_ShouldCreatePedidoRequest() {
         LocalDate fecha = LocalDate.of(2024, 1, 15);
-        PedidoRequest request = new PedidoRequest(fecha, 1500L, true);
+        PedidoRequest request = new PedidoRequest(fecha, new BigDecimal("1500"), true);
 
         assertEquals(fecha, request.getFecha());
-        assertEquals(1500L, request.getTotal());
+        assertEquals(new BigDecimal("1500"), request.getTotal());
         assertTrue(request.isEstado());
     }
 
@@ -33,19 +34,19 @@ class PedidoRequestTest {
         LocalDate fecha = LocalDate.of(2024, 1, 15);
 
         request.setFecha(fecha);
-        request.setTotal(1500L);
+        request.setTotal(new BigDecimal("1500"));
         request.setEstado(true);
 
         assertEquals(fecha, request.getFecha());
-        assertEquals(1500L, request.getTotal());
+        assertEquals(new BigDecimal("1500"), request.getTotal());
         assertTrue(request.isEstado());
     }
 
     @Test
     void equals_ShouldWorkCorrectly() {
         LocalDate fecha = LocalDate.of(2024, 1, 15);
-        PedidoRequest request1 = new PedidoRequest(fecha, 1500L, true);
-        PedidoRequest request2 = new PedidoRequest(fecha, 1500L, true);
+        PedidoRequest request1 = new PedidoRequest(fecha, new BigDecimal("1500"), true);
+        PedidoRequest request2 = new PedidoRequest(fecha, new BigDecimal("1500"), true);
 
         assertEquals(request1, request2);
         assertEquals(request1.hashCode(), request2.hashCode());

@@ -14,6 +14,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.mockito.Mockito.*;
@@ -32,8 +33,8 @@ class PedidoServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        pedido = new Pedido(1L, LocalDate.now(), 1000L, true);
-        existingPedido = new Pedido(1L, LocalDate.now().minusDays(1), 500L, false);
+        pedido = new Pedido(1L, LocalDate.now(), new BigDecimal("1000"), true, null, 1L);
+        existingPedido = new Pedido(1L, LocalDate.now().minusDays(1), new BigDecimal("500"), false, null, 1L);
     }
 
     @Test

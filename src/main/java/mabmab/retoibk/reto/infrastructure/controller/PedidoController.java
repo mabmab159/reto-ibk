@@ -11,12 +11,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/pedidos")
 @RequiredArgsConstructor
+@Tag(name = "Pedidos", description = "API para gestión de pedidos con cálculo automático de descuentos")
 public class PedidoController {
     
     private final PedidoUseCasePort pedidoUseCase;
@@ -48,7 +53,7 @@ public class PedidoController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<PedidoResponse>> createPedido(@RequestBody PedidoRequest request) {
+    public Mono<ResponseEntity<PedidoResponse>> createPedido(@Valid @RequestBody PedidoRequest request) {
         return pedidoUseCase.save(mapper.toDomain(request))
                 .map(mapper::toResponse)
                 .map(this::addAllLinks)
@@ -56,7 +61,7 @@ public class PedidoController {
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<PedidoResponse>> updatePedido(@PathVariable Long id, @RequestBody PedidoRequest request) {
+    public Mono<ResponseEntity<PedidoResponse>> updatePedido(@PathVariable Long id, @Valid @RequestBody PedidoRequest request) {
         return pedidoUseCase.update(id, mapper.toDomain(id, request))
                 .map(mapper::toResponse)
                 .map(this::addAllLinks)
@@ -82,6 +87,16 @@ public class PedidoController {
                     collection.add(linkTo(methodOn(PedidoController.class).getAllPedidos(0, 10)).withRel("all"));
                     return ResponseEntity.ok(collection);
                 });
+    }
+    
+    @PostMapping("/{id}/confirmar")
+    @Operation(summary = "Confirmar pedido", description = "Confirma un pedido aplicando descuentos automáticos y actualizando stock")
+    public Mono<ResponseEntity<PedidoResponse>> confirmarPedido(@PathVariable Long id) {
+        return pedidoUseCase.confirmarPedido(id)
+                .map(mapper::toResponse)
+                .map(this::addAllLinks)
+                .map(ResponseEntity::ok)
+                .onErrorReturn(ResponseEntity.badRequest().build());
     }
 
     private PedidoResponse addSelfLink(PedidoResponse pedido) {

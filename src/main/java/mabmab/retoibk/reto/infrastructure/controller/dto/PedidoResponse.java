@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -15,10 +16,8 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 public class PedidoResponse extends RepresentationModel<PedidoResponse> {
     private Long id;
-    
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate fecha;
-    
-    private Long total;
+    private BigDecimal total;
     private boolean estado;
 }

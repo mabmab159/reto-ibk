@@ -11,18 +11,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/productos")
 @RequiredArgsConstructor
+@Tag(name = "Productos", description = "API para gestión de productos")
 public class ProductoController {
     
     private final ProductoUseCasePort productoUseCase;
     private final ProductoControllerMapper mapper;
 
     @GetMapping
+    @Operation(summary = "Obtener todos los productos", description = "Retorna una lista paginada de productos")
     public Mono<ResponseEntity<CollectionModel<ProductoResponse>>> getAllProductos(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
@@ -48,7 +54,8 @@ public class ProductoController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<ProductoResponse>> createProducto(@RequestBody ProductoRequest request) {
+    @Operation(summary = "Crear producto", description = "Crea un nuevo producto")
+    public Mono<ResponseEntity<ProductoResponse>> createProducto(@Valid @RequestBody ProductoRequest request) {
         return productoUseCase.save(mapper.toDomain(request))
                 .map(mapper::toResponse)
                 .map(this::addAllLinks)
@@ -56,7 +63,7 @@ public class ProductoController {
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<ProductoResponse>> updateProducto(@PathVariable Long id, @RequestBody ProductoRequest request) {
+    public Mono<ResponseEntity<ProductoResponse>> updateProducto(@PathVariable Long id, @Valid @RequestBody ProductoRequest request) {
         return productoUseCase.update(id, mapper.toDomain(id, request))
                 .map(mapper::toResponse)
                 .map(this::addAllLinks)

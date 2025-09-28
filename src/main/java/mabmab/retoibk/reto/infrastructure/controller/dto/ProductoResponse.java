@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,6 +15,6 @@ import org.springframework.hateoas.RepresentationModel;
 public class ProductoResponse extends RepresentationModel<ProductoResponse> {
     private Long id;
     private String nombre;
-    private Long precio;
-    private int cantidad;
+    private BigDecimal precio;
+    private int stock;
 }

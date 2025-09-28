@@ -4,21 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
 
 @Data
-@Table("producto")
+@Table("pedido_item")
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductoEntity {
+public class PedidoItemEntity {
     @Id
     private Long id;
-    private String nombre;
-    private BigDecimal precio;
-    private int stock;
-    @Version
-    private Long version;
+    private Long pedidoId;
+    private Long productoId;
+    private int cantidad;
+    private BigDecimal precioUnitario;
+    private BigDecimal subtotal;
 }

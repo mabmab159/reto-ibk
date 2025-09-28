@@ -18,6 +18,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -41,9 +42,9 @@ class PedidoControllerTest {
     
     @BeforeEach
     void setUp() {
-        pedido = new Pedido(1L, LocalDate.now(), 1000L, true);
-        request = new PedidoRequest(LocalDate.now(), 1000L, true);
-        response = new PedidoResponse(1L, LocalDate.now(), 1000L, true);
+        pedido = new Pedido(1L, LocalDate.now(), new BigDecimal("1000"), true, null, 1L);
+        request = new PedidoRequest(LocalDate.now(), new BigDecimal("1000"), true);
+        response = new PedidoResponse(1L, LocalDate.now(), new BigDecimal("1000"), true);
     }
     
     @Test

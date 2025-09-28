@@ -8,10 +8,16 @@ import org.springframework.stereotype.Component;
 public class ProductoMapper {
     
     public Producto toDomain(ProductoEntity entity) {
-        return new Producto(entity.getId(), entity.getNombre(), entity.getPrecio(), entity.getCantidad());
+        if (entity == null) {
+            throw new IllegalArgumentException("ProductoEntity cannot be null");
+        }
+        return new Producto(entity.getId(), entity.getNombre(), entity.getPrecio(), entity.getStock(), entity.getVersion());
     }
     
     public ProductoEntity toEntity(Producto domain) {
-        return new ProductoEntity(domain.getId(), domain.getNombre(), domain.getPrecio(), domain.getCantidad());
+        if (domain == null) {
+            throw new IllegalArgumentException("Producto cannot be null");
+        }
+        return new ProductoEntity(domain.getId(), domain.getNombre(), domain.getPrecio(), domain.getStock(), domain.getVersion());
     }
 }

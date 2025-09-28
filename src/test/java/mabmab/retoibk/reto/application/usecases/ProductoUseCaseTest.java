@@ -2,6 +2,8 @@ package mabmab.retoibk.reto.application.usecases;
 
 import mabmab.retoibk.reto.domain.models.Producto;
 import mabmab.retoibk.reto.domain.services.ProductoService;
+
+import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +31,7 @@ class ProductoUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        producto = new Producto(1L, "Laptop", 1500L, 10);
+        producto = new Producto(1L, "Laptop", new BigDecimal("1500"), 10, 1L);
     }
 
     @Test

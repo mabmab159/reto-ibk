@@ -16,6 +16,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.mockito.Mockito.*;
@@ -37,11 +38,11 @@ class PedidoRepositoryAdapterTest {
 
     @BeforeEach
     void setUp() {
-        pedido = new Pedido(1L, LocalDate.now(), 1000L, true);
+        pedido = new Pedido(1L, LocalDate.now(), new BigDecimal("1000"), true, null, 1L);
         pedidoEntity = new PedidoEntity();
         pedidoEntity.setId(1L);
         pedidoEntity.setFecha(LocalDate.now());
-        pedidoEntity.setTotal(1000L);
+        pedidoEntity.setTotal(new BigDecimal("1000"));
         pedidoEntity.setEstado(true);
     }
 

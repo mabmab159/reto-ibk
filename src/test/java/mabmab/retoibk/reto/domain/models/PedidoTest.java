@@ -2,6 +2,7 @@ package mabmab.retoibk.reto.domain.models;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,11 +12,11 @@ class PedidoTest {
     @Test
     void constructor_ShouldCreatePedido() {
         LocalDate fecha = LocalDate.of(2024, 1, 15);
-        Pedido pedido = new Pedido(1L, fecha, 1500L, true);
+        Pedido pedido = new Pedido(1L, fecha, new BigDecimal("1500"), true, null, 1L);
 
         assertEquals(1L, pedido.getId());
         assertEquals(fecha, pedido.getFecha());
-        assertEquals(1500L, pedido.getTotal());
+        assertEquals(new BigDecimal("1500"), pedido.getTotal());
         assertTrue(pedido.isEstado());
     }
 
@@ -36,20 +37,20 @@ class PedidoTest {
 
         pedido.setId(1L);
         pedido.setFecha(fecha);
-        pedido.setTotal(1500L);
+        pedido.setTotal(new BigDecimal("1500"));
         pedido.setEstado(true);
 
         assertEquals(1L, pedido.getId());
         assertEquals(fecha, pedido.getFecha());
-        assertEquals(1500L, pedido.getTotal());
+        assertEquals(new BigDecimal("1500"), pedido.getTotal());
         assertTrue(pedido.isEstado());
     }
 
     @Test
     void equals_ShouldWorkCorrectly() {
         LocalDate fecha = LocalDate.of(2024, 1, 15);
-        Pedido pedido1 = new Pedido(1L, fecha, 1500L, true);
-        Pedido pedido2 = new Pedido(1L, fecha, 1500L, true);
+        Pedido pedido1 = new Pedido(1L, fecha, new BigDecimal("1500"), true, null, 1L);
+        Pedido pedido2 = new Pedido(1L, fecha, new BigDecimal("1500"), true, null, 1L);
 
         assertEquals(pedido1, pedido2);
         assertEquals(pedido1.hashCode(), pedido2.hashCode());
@@ -58,7 +59,7 @@ class PedidoTest {
     @Test
     void toString_ShouldReturnStringRepresentation() {
         LocalDate fecha = LocalDate.of(2024, 1, 15);
-        Pedido pedido = new Pedido(1L, fecha, 1500L, true);
+        Pedido pedido = new Pedido(1L, fecha, new BigDecimal("1500"), true, null, 1L);
 
         String result = pedido.toString();
 

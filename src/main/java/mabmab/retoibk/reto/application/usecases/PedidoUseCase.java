@@ -49,4 +49,9 @@ public class PedidoUseCase implements PedidoUseCasePort {
     public Flux<Pedido> findByEstado(boolean estado) {
         return pedidoService.findByEstado(estado);
     }
+    
+    @Override
+    public Mono<Pedido> confirmarPedido(Long id) {
+        return pedidoService.confirmarPedido(id);
+    }
 }

@@ -6,6 +6,7 @@ import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,8 +20,8 @@ class PedidoControllerMapperTest {
     @BeforeEach
     void setUp() {
         mapper = new PedidoControllerMapper();
-        pedido = new Pedido(1L, LocalDate.of(2024, 1, 15), 1500L, true);
-        request = new PedidoRequest(LocalDate.of(2024, 1, 15), 1500L, true);
+        pedido = new Pedido(1L, LocalDate.of(2024, 1, 15), new BigDecimal("1500"), true, null, 1L);
+        request = new PedidoRequest(LocalDate.of(2024, 1, 15), new BigDecimal("1500"), true);
     }
 
     @Test
