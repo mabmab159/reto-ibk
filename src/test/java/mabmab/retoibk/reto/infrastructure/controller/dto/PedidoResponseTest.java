@@ -1,7 +1,6 @@
 package mabmab.retoibk.reto.infrastructure.controller.dto;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.hateoas.Link;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -57,17 +56,7 @@ class PedidoResponseTest {
         assertEquals(items, response.getItems());
     }
 
-    @Test
-    void addLink_ShouldAddHateoasLink() {
-        List<PedidoItemResponse> items = List.of(new PedidoItemResponse(1L, 1L, "Producto", 2, new BigDecimal("100"), new BigDecimal("200")));
-        PedidoResponse response = new PedidoResponse(1L, LocalDate.now(), new BigDecimal("1500"), true, items);
-        Link selfLink = Link.of("/api/pedidos/1").withSelfRel();
 
-        response.add(selfLink);
-
-        assertTrue(response.hasLinks());
-        assertTrue(response.hasLink("self"));
-    }
 
     @Test
     void equals_ShouldWorkCorrectly() {

@@ -1,7 +1,10 @@
 package mabmab.retoibk.configuration.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
+import mabmab.retoibk.reto.domain.exceptions.ConcurrenciaException;
+import mabmab.retoibk.reto.domain.exceptions.StockInsuficienteException;
 import mabmab.retoibk.reto.infrastructure.controller.dto.ErrorResponse;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,6 +24,18 @@ public class GlobalExceptionHandler {
                 .orElse("Error de validación");
         ErrorResponse error = new ErrorResponse(mensaje);
         return Mono.just(ResponseEntity.badRequest().body(error));
+    }
+
+    @ExceptionHandler(StockInsuficienteException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleStockInsuficienteException(StockInsuficienteException ex) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage());
+        return Mono.just(ResponseEntity.status(HttpStatus.CONFLICT).body(error));
+    }
+
+    @ExceptionHandler({ConcurrenciaException.class, OptimisticLockingFailureException.class})
+    public Mono<ResponseEntity<ErrorResponse>> handleConcurrenciaException(Exception ex) {
+        ErrorResponse error = new ErrorResponse("Error de concurrencia. Intente nuevamente.");
+        return Mono.just(ResponseEntity.status(HttpStatus.CONFLICT).body(error));
     }
 
     @ExceptionHandler(Exception.class)

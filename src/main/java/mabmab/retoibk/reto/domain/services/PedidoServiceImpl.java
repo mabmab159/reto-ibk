@@ -1,17 +1,22 @@
 package mabmab.retoibk.reto.domain.services;
 
 import lombok.RequiredArgsConstructor;
+import mabmab.retoibk.reto.domain.exceptions.ConcurrenciaException;
 import mabmab.retoibk.reto.domain.models.Pedido;
 import mabmab.retoibk.reto.domain.models.PedidoItem;
 import mabmab.retoibk.reto.domain.ports.out.PedidoRepositoryPort;
 import mabmab.retoibk.reto.domain.ports.out.ProductoRepositoryPort;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 
 @Service
@@ -21,6 +26,8 @@ public class PedidoServiceImpl implements PedidoService {
     private final PedidoRepositoryPort pedidoRepositoryPort;
     private final ProductoRepositoryPort productoRepositoryPort;
     private final DescuentoService descuentoService;
+    private final StockService stockService;
+    private final TransactionalOperator transactionalOperator;
 
     @Override
     public Flux<Pedido> findAll() {
@@ -36,14 +43,19 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
-    @Transactional
     public Mono<Pedido> save(Pedido pedido) {
         if (pedido.getFecha() == null) {
             pedido.setFecha(LocalDate.now());
         }
         
-        return calcularTotalConItems(pedido)
-                .flatMap(pedidoRepositoryPort::save);
+        return stockService.validarYReservarStock(pedido.getItems())
+                .then(calcularTotalConItems(pedido))
+                .flatMap(pedidoRepositoryPort::save)
+                .as(transactionalOperator::transactional)
+                .retryWhen(Retry.backoff(3, Duration.ofMillis(100))
+                    .filter(OptimisticLockingFailureException.class::isInstance))
+                .onErrorMap(OptimisticLockingFailureException.class, 
+                    ex -> new ConcurrenciaException("Error de concurrencia al procesar pedido"));
     }
 
     @Override

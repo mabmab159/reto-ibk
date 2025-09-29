@@ -37,6 +37,12 @@ class PedidoServiceImplTest {
     
     @Mock
     private DescuentoService descuentoService;
+    
+    @Mock
+    private StockService stockService;
+    
+    @Mock
+    private org.springframework.transaction.reactive.TransactionalOperator transactionalOperator;
 
     @InjectMocks
     private PedidoServiceImpl pedidoService;
@@ -78,14 +84,17 @@ class PedidoServiceImplTest {
 
     @Test
     void save_ShouldSavePedido() {
+        when(stockService.validarYReservarStock(any())).thenReturn(Mono.empty());
         when(productoRepositoryPort.findById(1L)).thenReturn(Mono.just(producto));
         when(descuentoService.calcularTotal(any(Pedido.class))).thenReturn(new BigDecimal("180"));
         when(pedidoRepositoryPort.save(any(Pedido.class))).thenReturn(Mono.just(pedido));
+        when(transactionalOperator.<Pedido>transactional(any(Mono.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         StepVerifier.create(pedidoService.save(pedido))
                 .expectNextMatches(saved -> saved.getTotal() != null)
                 .verifyComplete();
 
+        verify(stockService).validarYReservarStock(any());
         verify(pedidoRepositoryPort).save(any(Pedido.class));
         verify(descuentoService).calcularTotal(any(Pedido.class));
     }

@@ -51,7 +51,7 @@ class ProductoControllerTest {
         when(mapper.toResponse(producto)).thenReturn(response);
 
         StepVerifier.create(productoController.getAllProductos(0, 10))
-                .expectNextMatches(resp -> resp.getStatusCode() == HttpStatus.OK)
+                .expectNext(response)
                 .verifyComplete();
     }
 
