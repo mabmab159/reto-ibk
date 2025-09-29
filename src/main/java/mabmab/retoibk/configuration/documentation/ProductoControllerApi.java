@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import mabmab.retoibk.reto.infrastructure.controller.dto.ProductoRequest;
 import mabmab.retoibk.reto.infrastructure.controller.dto.ProductoResponse;
-import org.springframework.hateoas.CollectionModel;
+import reactor.core.publisher.Flux;
 import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 
@@ -20,7 +20,7 @@ public interface ProductoControllerApi {
             @ApiResponse(responseCode = "200", description = "Lista de productos obtenida exitosamente"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    Mono<ResponseEntity<CollectionModel<ProductoResponse>>> getAllProductos(
+    Flux<ProductoResponse> getAllProductos(
             @Parameter(description = "Número de página (inicia en 0)") int page,
             @Parameter(description = "Tamaño de página") int size);
 

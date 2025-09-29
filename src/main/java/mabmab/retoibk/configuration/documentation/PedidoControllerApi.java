@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoRequest;
 import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoResponse;
-import org.springframework.hateoas.CollectionModel;
+import reactor.core.publisher.Flux;
 import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 
@@ -20,7 +20,7 @@ public interface PedidoControllerApi {
             @ApiResponse(responseCode = "200", description = "Lista de pedidos obtenida exitosamente"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    Mono<ResponseEntity<CollectionModel<PedidoResponse>>> getAllPedidos(
+    Flux<PedidoResponse> getAllPedidos(
             @Parameter(description = "Número de página (inicia en 0)") int page,
             @Parameter(description = "Tamaño de página") int size);
 
