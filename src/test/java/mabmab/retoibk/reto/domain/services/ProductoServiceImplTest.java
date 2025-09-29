@@ -2,8 +2,6 @@ package mabmab.retoibk.reto.domain.services;
 
 import mabmab.retoibk.reto.domain.models.Producto;
 import mabmab.retoibk.reto.domain.ports.out.ProductoRepositoryPort;
-
-import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +14,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static org.mockito.Mockito.*;
+import java.math.BigDecimal;
+
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProductoServiceImplTest {
@@ -75,10 +78,10 @@ class ProductoServiceImplTest {
         when(productoRepositoryPort.save(any(Producto.class))).thenReturn(Mono.just(producto));
 
         StepVerifier.create(productoService.update(1L, producto))
-                .expectNextMatches(updated -> 
-                    updated.getNombre().equals(producto.getNombre()) &&
-                    updated.getPrecio().equals(producto.getPrecio()) &&
-                    updated.getStock() == producto.getStock()
+                .expectNextMatches(updated ->
+                        updated.getNombre().equals(producto.getNombre()) &&
+                                updated.getPrecio().equals(producto.getPrecio()) &&
+                                updated.getStock() == producto.getStock()
                 )
                 .verifyComplete();
 
@@ -119,14 +122,5 @@ class ProductoServiceImplTest {
         verify(productoRepositoryPort).findAll(pageable);
     }
 
-    @Test
-    void findByNombre_ShouldReturnProductosByNombre() {
-        when(productoRepositoryPort.findByNombreContainingIgnoreCase("Laptop")).thenReturn(Flux.just(producto));
 
-        StepVerifier.create(productoService.findByNombre("Laptop"))
-                .expectNext(producto)
-                .verifyComplete();
-
-        verify(productoRepositoryPort).findByNombreContainingIgnoreCase("Laptop");
-    }
 }

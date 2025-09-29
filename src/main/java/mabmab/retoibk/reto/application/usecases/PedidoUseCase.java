@@ -12,34 +12,34 @@ import reactor.core.publisher.Mono;
 @Component
 @RequiredArgsConstructor
 public class PedidoUseCase implements PedidoUseCasePort {
-    
+
     private final PedidoService pedidoService;
-    
+
     @Override
     public Flux<Pedido> findAll() {
         return pedidoService.findAll();
     }
-    
+
     @Override
     public Mono<Pedido> findById(Long id) {
         return pedidoService.findById(id);
     }
-    
+
     @Override
     public Mono<Pedido> save(Pedido pedido) {
         return pedidoService.save(pedido);
     }
-    
+
     @Override
     public Mono<Pedido> update(Long id, Pedido pedido) {
         return pedidoService.update(id, pedido);
     }
-    
+
     @Override
     public Mono<Void> deleteById(Long id) {
         return pedidoService.deleteById(id);
     }
-    
+
     @Override
     public Flux<Pedido> findAll(Pageable pageable) {
         return pedidoService.findAll(pageable);
@@ -49,9 +49,6 @@ public class PedidoUseCase implements PedidoUseCasePort {
     public Flux<Pedido> findByEstado(boolean estado) {
         return pedidoService.findByEstado(estado);
     }
-    
-    @Override
-    public Mono<Pedido> confirmarPedido(Long id) {
-        return pedidoService.confirmarPedido(id);
-    }
+
+
 }

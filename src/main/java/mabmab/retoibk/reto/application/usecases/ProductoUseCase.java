@@ -12,41 +12,38 @@ import reactor.core.publisher.Mono;
 @Component
 @RequiredArgsConstructor
 public class ProductoUseCase implements ProductoUseCasePort {
-    
+
     private final ProductoService productoService;
-    
+
     @Override
     public Flux<Producto> findAll() {
         return productoService.findAll();
     }
-    
+
     @Override
     public Mono<Producto> findById(Long id) {
         return productoService.findById(id);
     }
-    
+
     @Override
     public Mono<Producto> save(Producto producto) {
         return productoService.save(producto);
     }
-    
+
     @Override
     public Mono<Producto> update(Long id, Producto producto) {
         return productoService.update(id, producto);
     }
-    
+
     @Override
     public Mono<Void> deleteById(Long id) {
         return productoService.deleteById(id);
     }
-    
+
     @Override
     public Flux<Producto> findAll(Pageable pageable) {
         return productoService.findAll(pageable);
     }
 
-    @Override
-    public Flux<Producto> findByNombre(String nombre) {
-        return productoService.findByNombre(nombre);
-    }
+
 }

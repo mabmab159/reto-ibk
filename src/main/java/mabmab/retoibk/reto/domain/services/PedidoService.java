@@ -7,11 +7,16 @@ import reactor.core.publisher.Mono;
 
 public interface PedidoService {
     Flux<Pedido> findAll();
+
     Flux<Pedido> findAll(Pageable pageable);
+
     Mono<Pedido> findById(Long id);
+
     Mono<Pedido> save(Pedido pedido);
+
     Mono<Pedido> update(Long id, Pedido pedido);
+
     Mono<Void> deleteById(Long id);
+
     Flux<Pedido> findByEstado(boolean estado);
-    Mono<Pedido> confirmarPedido(Long id);
 }

@@ -7,9 +7,14 @@ import reactor.core.publisher.Mono;
 
 public interface ProductoRepositoryPort {
     Flux<Producto> findAll();
+
     Flux<Producto> findAll(Pageable pageable);
+
     Mono<Producto> findById(Long id);
+
     Mono<Producto> save(Producto producto);
+
     Mono<Void> deleteById(Long id);
+
     Flux<Producto> findByNombreContainingIgnoreCase(String nombre);
 }

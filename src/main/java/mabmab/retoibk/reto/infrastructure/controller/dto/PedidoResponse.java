@@ -9,6 +9,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,4 +21,5 @@ public class PedidoResponse extends RepresentationModel<PedidoResponse> {
     private LocalDate fecha;
     private BigDecimal total;
     private boolean estado;
+    private List<PedidoItemResponse> items;
 }

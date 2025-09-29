@@ -1,6 +1,7 @@
 package mabmab.retoibk.reto.infrastructure.controller.mappers;
 
 import mabmab.retoibk.reto.domain.models.Pedido;
+import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoItemRequest;
 import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoRequest;
 import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,8 +9,11 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class PedidoControllerMapperTest {
 
@@ -21,7 +25,7 @@ class PedidoControllerMapperTest {
     void setUp() {
         mapper = new PedidoControllerMapper();
         pedido = new Pedido(1L, LocalDate.of(2024, 1, 15), new BigDecimal("1500"), true, null, 1L);
-        request = new PedidoRequest(LocalDate.of(2024, 1, 15), new BigDecimal("1500"), true);
+        request = new PedidoRequest(LocalDate.of(2024, 1, 15), true, List.of(new PedidoItemRequest(1L, 2)));
     }
 
     @Test
@@ -42,7 +46,7 @@ class PedidoControllerMapperTest {
         assertNotNull(result);
         assertNull(result.getId());
         assertEquals(request.getFecha(), result.getFecha());
-        assertEquals(request.getTotal(), result.getTotal());
+        assertEquals(request.getItems().size(), result.getItems().size());
         assertEquals(request.isEstado(), result.isEstado());
     }
 
@@ -54,7 +58,7 @@ class PedidoControllerMapperTest {
         assertNotNull(result);
         assertEquals(id, result.getId());
         assertEquals(request.getFecha(), result.getFecha());
-        assertEquals(request.getTotal(), result.getTotal());
+        assertEquals(request.getItems().size(), result.getItems().size());
         assertEquals(request.isEstado(), result.isEstado());
     }
 }

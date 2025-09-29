@@ -6,9 +6,14 @@ import reactor.core.publisher.Mono;
 
 public interface ProductoUseCase {
     Flux<Producto> findAll();
+
     Mono<Producto> findById(Long id);
+
     Mono<Producto> save(Producto producto);
+
     Mono<Producto> update(Long id, Producto producto);
+
     Mono<Void> deleteById(Long id);
+
     Flux<Producto> findByNombre(String nombre);
 }

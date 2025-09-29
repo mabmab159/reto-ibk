@@ -1,6 +1,8 @@
 package mabmab.retoibk.reto.infrastructure.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import mabmab.retoibk.configuration.documentation.PedidoControllerApi;
 import mabmab.retoibk.reto.application.ports.PedidoUseCasePort;
 import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoRequest;
 import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoResponse;
@@ -9,21 +11,24 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
-import jakarta.validation.Valid;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/pedidos")
 @RequiredArgsConstructor
-@Tag(name = "Pedidos", description = "API para gestión de pedidos con cálculo automático de descuentos")
-public class PedidoController {
-    
+public class PedidoController implements PedidoControllerApi {
     private final PedidoUseCasePort pedidoUseCase;
     private final PedidoControllerMapper mapper;
 
@@ -73,30 +78,6 @@ public class PedidoController {
     public Mono<ResponseEntity<Void>> deletePedido(@PathVariable Long id) {
         return pedidoUseCase.deleteById(id)
                 .then(Mono.just(ResponseEntity.noContent().<Void>build()));
-    }
-
-    @GetMapping("/estado")
-    public Mono<ResponseEntity<CollectionModel<PedidoResponse>>> buscarPorEstado(@RequestParam boolean estado) {
-        return pedidoUseCase.findByEstado(estado)
-                .map(mapper::toResponse)
-                .map(this::addSelfLink)
-                .collectList()
-                .map(pedidos -> {
-                    CollectionModel<PedidoResponse> collection = CollectionModel.of(pedidos);
-                    collection.add(linkTo(methodOn(PedidoController.class).buscarPorEstado(estado)).withSelfRel());
-                    collection.add(linkTo(methodOn(PedidoController.class).getAllPedidos(0, 10)).withRel("all"));
-                    return ResponseEntity.ok(collection);
-                });
-    }
-    
-    @PostMapping("/{id}/confirmar")
-    @Operation(summary = "Confirmar pedido", description = "Confirma un pedido aplicando descuentos automáticos y actualizando stock")
-    public Mono<ResponseEntity<PedidoResponse>> confirmarPedido(@PathVariable Long id) {
-        return pedidoUseCase.confirmarPedido(id)
-                .map(mapper::toResponse)
-                .map(this::addAllLinks)
-                .map(ResponseEntity::ok)
-                .onErrorReturn(ResponseEntity.badRequest().build());
     }
 
     private PedidoResponse addSelfLink(PedidoResponse pedido) {

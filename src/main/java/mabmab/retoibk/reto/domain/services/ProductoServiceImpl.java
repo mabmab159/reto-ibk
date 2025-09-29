@@ -12,14 +12,14 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 public class ProductoServiceImpl implements ProductoService {
-    
+
     private final ProductoRepositoryPort productoRepositoryPort;
-    
+
     @Override
     public Flux<Producto> findAll() {
         return productoRepositoryPort.findAll();
     }
-    
+
     @Override
     public Mono<Producto> findById(Long id) {
         if (id == null) {
@@ -27,13 +27,13 @@ public class ProductoServiceImpl implements ProductoService {
         }
         return productoRepositoryPort.findById(id);
     }
-    
+
     @Override
     @Transactional
     public Mono<Producto> save(Producto producto) {
         return productoRepositoryPort.save(producto);
     }
-    
+
     @Override
     @Transactional
     public Mono<Producto> update(Long id, Producto producto) {
@@ -51,23 +51,17 @@ public class ProductoServiceImpl implements ProductoService {
                     return productoRepositoryPort.save(existing);
                 });
     }
-    
+
     @Override
     @Transactional
     public Mono<Void> deleteById(Long id) {
         return productoRepositoryPort.deleteById(id);
     }
-    
+
     @Override
     public Flux<Producto> findAll(Pageable pageable) {
         return productoRepositoryPort.findAll(pageable);
     }
 
-    @Override
-    public Flux<Producto> findByNombre(String nombre) {
-        if (nombre == null) {
-            return Flux.empty();
-        }
-        return productoRepositoryPort.findByNombreContainingIgnoreCase(nombre);
-    }
+
 }

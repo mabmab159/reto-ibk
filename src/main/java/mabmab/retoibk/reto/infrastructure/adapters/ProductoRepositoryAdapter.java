@@ -13,30 +13,30 @@ import reactor.core.publisher.Mono;
 @Component
 @RequiredArgsConstructor
 public class ProductoRepositoryAdapter implements ProductoRepositoryPort {
-    
+
     private final ProductoRepository productoRepository;
     private final ProductoMapper productoMapper;
-    
+
     @Override
     public Flux<Producto> findAll() {
         return productoRepository.findAll().map(productoMapper::toDomain);
     }
-    
+
     @Override
     public Mono<Producto> findById(Long id) {
         return productoRepository.findById(id).map(productoMapper::toDomain);
     }
-    
+
     @Override
     public Mono<Producto> save(Producto producto) {
         return productoRepository.save(productoMapper.toEntity(producto)).map(productoMapper::toDomain);
     }
-    
+
     @Override
     public Mono<Void> deleteById(Long id) {
         return productoRepository.deleteById(id);
     }
-    
+
     @Override
     public Flux<Producto> findAll(Pageable pageable) {
         return productoRepository.findAllBy(pageable).map(productoMapper::toDomain);

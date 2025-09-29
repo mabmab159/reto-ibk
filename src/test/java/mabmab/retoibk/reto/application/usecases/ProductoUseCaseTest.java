@@ -2,8 +2,6 @@ package mabmab.retoibk.reto.application.usecases;
 
 import mabmab.retoibk.reto.domain.models.Producto;
 import mabmab.retoibk.reto.domain.services.ProductoService;
-
-import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +14,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static org.mockito.Mockito.*;
+import java.math.BigDecimal;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProductoUseCaseTest {
@@ -100,14 +101,5 @@ class ProductoUseCaseTest {
         verify(productoService).findAll(pageable);
     }
 
-    @Test
-    void findByNombre_ShouldReturnProductosByNombre() {
-        when(productoService.findByNombre("Laptop")).thenReturn(Flux.just(producto));
 
-        StepVerifier.create(productoUseCase.findByNombre("Laptop"))
-                .expectNext(producto)
-                .verifyComplete();
-
-        verify(productoService).findByNombre("Laptop");
-    }
 }

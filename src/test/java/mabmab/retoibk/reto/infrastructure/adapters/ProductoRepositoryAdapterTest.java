@@ -2,8 +2,6 @@ package mabmab.retoibk.reto.infrastructure.adapters;
 
 import mabmab.retoibk.reto.domain.models.Producto;
 import mabmab.retoibk.reto.infrastructure.dataproviders.entities.ProductoEntity;
-
-import java.math.BigDecimal;
 import mabmab.retoibk.reto.infrastructure.dataproviders.mappers.ProductoMapper;
 import mabmab.retoibk.reto.infrastructure.dataproviders.repositories.ProductoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +16,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static org.mockito.Mockito.*;
+import java.math.BigDecimal;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProductoRepositoryAdapterTest {

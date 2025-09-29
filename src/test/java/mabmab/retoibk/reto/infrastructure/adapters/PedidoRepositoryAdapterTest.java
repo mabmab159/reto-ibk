@@ -2,7 +2,9 @@ package mabmab.retoibk.reto.infrastructure.adapters;
 
 import mabmab.retoibk.reto.domain.models.Pedido;
 import mabmab.retoibk.reto.infrastructure.dataproviders.entities.PedidoEntity;
+import mabmab.retoibk.reto.infrastructure.dataproviders.entities.PedidoItemEntity;
 import mabmab.retoibk.reto.infrastructure.dataproviders.mappers.PedidoMapper;
+import mabmab.retoibk.reto.infrastructure.dataproviders.repositories.PedidoItemRepository;
 import mabmab.retoibk.reto.infrastructure.dataproviders.repositories.PedidoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,13 +21,17 @@ import reactor.test.StepVerifier;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PedidoRepositoryAdapterTest {
 
     @Mock
     private PedidoRepository pedidoRepository;
+    
+    @Mock
+    private PedidoItemRepository pedidoItemRepository;
 
     @Mock
     private PedidoMapper pedidoMapper;
@@ -49,6 +55,7 @@ class PedidoRepositoryAdapterTest {
     @Test
     void findAll_ShouldReturnAllPedidos() {
         when(pedidoRepository.findAll()).thenReturn(Flux.just(pedidoEntity));
+        when(pedidoItemRepository.findByPedidoId(1L)).thenReturn(Flux.empty());
         when(pedidoMapper.toDomain(pedidoEntity)).thenReturn(pedido);
 
         StepVerifier.create(pedidoRepositoryAdapter.findAll())
@@ -56,12 +63,13 @@ class PedidoRepositoryAdapterTest {
                 .verifyComplete();
 
         verify(pedidoRepository).findAll();
-        verify(pedidoMapper).toDomain(pedidoEntity);
+        verify(pedidoItemRepository).findByPedidoId(1L);
     }
 
     @Test
     void findById_ShouldReturnPedido() {
         when(pedidoRepository.findById(1L)).thenReturn(Mono.just(pedidoEntity));
+        when(pedidoItemRepository.findByPedidoId(1L)).thenReturn(Flux.empty());
         when(pedidoMapper.toDomain(pedidoEntity)).thenReturn(pedido);
 
         StepVerifier.create(pedidoRepositoryAdapter.findById(1L))
@@ -69,13 +77,14 @@ class PedidoRepositoryAdapterTest {
                 .verifyComplete();
 
         verify(pedidoRepository).findById(1L);
-        verify(pedidoMapper).toDomain(pedidoEntity);
+        verify(pedidoItemRepository).findByPedidoId(1L);
     }
 
     @Test
     void save_ShouldSavePedido() {
         when(pedidoMapper.toEntity(pedido)).thenReturn(pedidoEntity);
         when(pedidoRepository.save(pedidoEntity)).thenReturn(Mono.just(pedidoEntity));
+        when(pedidoItemRepository.findByPedidoId(1L)).thenReturn(Flux.empty());
         when(pedidoMapper.toDomain(pedidoEntity)).thenReturn(pedido);
 
         StepVerifier.create(pedidoRepositoryAdapter.save(pedido))
@@ -84,7 +93,6 @@ class PedidoRepositoryAdapterTest {
 
         verify(pedidoMapper).toEntity(pedido);
         verify(pedidoRepository).save(pedidoEntity);
-        verify(pedidoMapper).toDomain(pedidoEntity);
     }
 
     @Test
@@ -101,6 +109,7 @@ class PedidoRepositoryAdapterTest {
     void findAllWithPageable_ShouldReturnPagedPedidos() {
         Pageable pageable = PageRequest.of(0, 10);
         when(pedidoRepository.findAllBy(pageable)).thenReturn(Flux.just(pedidoEntity));
+        when(pedidoItemRepository.findByPedidoId(1L)).thenReturn(Flux.empty());
         when(pedidoMapper.toDomain(pedidoEntity)).thenReturn(pedido);
 
         StepVerifier.create(pedidoRepositoryAdapter.findAll(pageable))
@@ -108,12 +117,13 @@ class PedidoRepositoryAdapterTest {
                 .verifyComplete();
 
         verify(pedidoRepository).findAllBy(pageable);
-        verify(pedidoMapper).toDomain(pedidoEntity);
+        verify(pedidoItemRepository).findByPedidoId(1L);
     }
 
     @Test
     void findByEstado_ShouldReturnPedidosByEstado() {
         when(pedidoRepository.findByEstado(true)).thenReturn(Flux.just(pedidoEntity));
+        when(pedidoItemRepository.findByPedidoId(1L)).thenReturn(Flux.empty());
         when(pedidoMapper.toDomain(pedidoEntity)).thenReturn(pedido);
 
         StepVerifier.create(pedidoRepositoryAdapter.findByEstado(true))
@@ -121,6 +131,6 @@ class PedidoRepositoryAdapterTest {
                 .verifyComplete();
 
         verify(pedidoRepository).findByEstado(true);
-        verify(pedidoMapper).toDomain(pedidoEntity);
+        verify(pedidoItemRepository).findByPedidoId(1L);
     }
 }

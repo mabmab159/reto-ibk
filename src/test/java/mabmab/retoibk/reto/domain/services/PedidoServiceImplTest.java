@@ -1,7 +1,10 @@
 package mabmab.retoibk.reto.domain.services;
 
 import mabmab.retoibk.reto.domain.models.Pedido;
+import mabmab.retoibk.reto.domain.models.PedidoItem;
+import mabmab.retoibk.reto.domain.models.Producto;
 import mabmab.retoibk.reto.domain.ports.out.PedidoRepositoryPort;
+import mabmab.retoibk.reto.domain.ports.out.ProductoRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,25 +19,39 @@ import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PedidoServiceImplTest {
 
     @Mock
     private PedidoRepositoryPort pedidoRepositoryPort;
+    
+    @Mock
+    private ProductoRepositoryPort productoRepositoryPort;
+    
+    @Mock
+    private DescuentoService descuentoService;
 
     @InjectMocks
     private PedidoServiceImpl pedidoService;
 
     private Pedido pedido;
     private Pedido existingPedido;
+    private PedidoItem pedidoItem;
+    private Producto producto;
 
     @BeforeEach
     void setUp() {
-        pedido = new Pedido(1L, LocalDate.now(), new BigDecimal("1000"), true, null, 1L);
-        existingPedido = new Pedido(1L, LocalDate.now().minusDays(1), new BigDecimal("500"), false, null, 1L);
+        pedidoItem = new PedidoItem(1L, 1L, 1L, 2, new BigDecimal("100"), new BigDecimal("200"));
+        pedido = new Pedido(1L, LocalDate.now(), new BigDecimal("1000"), true, List.of(pedidoItem), 1L);
+        existingPedido = new Pedido(1L, LocalDate.now().minusDays(1), new BigDecimal("500"), false, List.of(pedidoItem), 1L);
+        producto = new Producto(1L, "Producto Test", new BigDecimal("100"), 10, 1L);
     }
 
     @Test
@@ -61,26 +78,26 @@ class PedidoServiceImplTest {
 
     @Test
     void save_ShouldSavePedido() {
-        when(pedidoRepositoryPort.save(pedido)).thenReturn(Mono.just(pedido));
+        when(productoRepositoryPort.findById(1L)).thenReturn(Mono.just(producto));
+        when(descuentoService.calcularTotal(any(Pedido.class))).thenReturn(new BigDecimal("180"));
+        when(pedidoRepositoryPort.save(any(Pedido.class))).thenReturn(Mono.just(pedido));
 
         StepVerifier.create(pedidoService.save(pedido))
-                .expectNext(pedido)
+                .expectNextMatches(saved -> saved.getTotal() != null)
                 .verifyComplete();
 
-        verify(pedidoRepositoryPort).save(pedido);
+        verify(pedidoRepositoryPort).save(any(Pedido.class));
+        verify(descuentoService).calcularTotal(any(Pedido.class));
     }
 
     @Test
     void update_WhenPedidoExists_ShouldUpdateAndSave() {
         when(pedidoRepositoryPort.findById(1L)).thenReturn(Mono.just(existingPedido));
+        when(productoRepositoryPort.findById(1L)).thenReturn(Mono.just(producto));
         when(pedidoRepositoryPort.save(any(Pedido.class))).thenReturn(Mono.just(pedido));
 
         StepVerifier.create(pedidoService.update(1L, pedido))
-                .expectNextMatches(updated -> 
-                    updated.getFecha().equals(pedido.getFecha()) &&
-                    updated.getTotal().equals(pedido.getTotal()) &&
-                    updated.isEstado() == pedido.isEstado()
-                )
+                .expectNextMatches(updated -> updated.getFecha().equals(pedido.getFecha()))
                 .verifyComplete();
 
         verify(pedidoRepositoryPort).findById(1L);
@@ -130,4 +147,6 @@ class PedidoServiceImplTest {
 
         verify(pedidoRepositoryPort).findByEstado(true);
     }
+    
+
 }

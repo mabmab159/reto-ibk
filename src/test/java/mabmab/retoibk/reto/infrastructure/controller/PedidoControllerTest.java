@@ -2,6 +2,8 @@ package mabmab.retoibk.reto.infrastructure.controller;
 
 import mabmab.retoibk.reto.application.ports.PedidoUseCasePort;
 import mabmab.retoibk.reto.domain.models.Pedido;
+import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoItemRequest;
+import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoItemResponse;
 import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoRequest;
 import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoResponse;
 import mabmab.retoibk.reto.infrastructure.controller.mappers.PedidoControllerMapper;
@@ -20,8 +22,9 @@ import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,130 +32,117 @@ class PedidoControllerTest {
 
     @Mock
     private PedidoUseCasePort pedidoUseCase;
-    
+
     @Mock
     private PedidoControllerMapper mapper;
-    
+
     @InjectMocks
     private PedidoController pedidoController;
-    
+
     private Pedido pedido;
     private PedidoRequest request;
     private PedidoResponse response;
-    
+
     @BeforeEach
     void setUp() {
         pedido = new Pedido(1L, LocalDate.now(), new BigDecimal("1000"), true, null, 1L);
-        request = new PedidoRequest(LocalDate.now(), new BigDecimal("1000"), true);
-        response = new PedidoResponse(1L, LocalDate.now(), new BigDecimal("1000"), true);
+        request = new PedidoRequest(LocalDate.now(), true, List.of(new PedidoItemRequest(1L, 2)));
+        response = new PedidoResponse(1L, LocalDate.now(), new BigDecimal("1000"), true, List.of(new PedidoItemResponse(1L, 1L, "Producto", 2, new BigDecimal("100"), new BigDecimal("200"))));
     }
-    
+
     @Test
     void getAllPedidos_ShouldReturnCollectionWithLinks() {
         when(pedidoUseCase.findAll(any(PageRequest.class))).thenReturn(Flux.just(pedido));
         when(mapper.toResponse(pedido)).thenReturn(response);
-        
+
         StepVerifier.create(pedidoController.getAllPedidos(0, 10))
                 .expectNextMatches(responseEntity -> {
                     CollectionModel<PedidoResponse> body = responseEntity.getBody();
                     return responseEntity.getStatusCode() == HttpStatus.OK &&
-                           body != null && 
-                           body.hasLinks() &&
-                           !body.getContent().isEmpty();
+                            body != null &&
+                            body.hasLinks() &&
+                            !body.getContent().isEmpty();
                 })
                 .verifyComplete();
     }
-    
+
     @Test
     void getPedidoById_WhenExists_ShouldReturnPedidoWithLinks() {
         when(pedidoUseCase.findById(1L)).thenReturn(Mono.just(pedido));
         when(mapper.toResponse(pedido)).thenReturn(response);
-        
+
         StepVerifier.create(pedidoController.getPedidoById(1L))
-                .expectNextMatches(responseEntity -> 
-                    responseEntity.getStatusCode() == HttpStatus.OK &&
-                    responseEntity.getBody() != null &&
-                    responseEntity.getBody().hasLinks()
+                .expectNextMatches(responseEntity ->
+                        responseEntity.getStatusCode() == HttpStatus.OK &&
+                                responseEntity.getBody() != null &&
+                                responseEntity.getBody().hasLinks()
                 )
                 .verifyComplete();
     }
-    
+
     @Test
     void getPedidoById_WhenNotExists_ShouldReturnNotFound() {
         when(pedidoUseCase.findById(1L)).thenReturn(Mono.empty());
-        
+
         StepVerifier.create(pedidoController.getPedidoById(1L))
-                .expectNextMatches(responseEntity -> 
-                    responseEntity.getStatusCode() == HttpStatus.NOT_FOUND
+                .expectNextMatches(responseEntity ->
+                        responseEntity.getStatusCode() == HttpStatus.NOT_FOUND
                 )
                 .verifyComplete();
     }
-    
+
     @Test
     void createPedido_ShouldReturnCreatedWithLinks() {
         when(mapper.toDomain(request)).thenReturn(pedido);
         when(pedidoUseCase.save(pedido)).thenReturn(Mono.just(pedido));
         when(mapper.toResponse(pedido)).thenReturn(response);
-        
+
         StepVerifier.create(pedidoController.createPedido(request))
-                .expectNextMatches(responseEntity -> 
-                    responseEntity.getStatusCode() == HttpStatus.CREATED &&
-                    responseEntity.getBody() != null &&
-                    responseEntity.getBody().hasLinks()
+                .expectNextMatches(responseEntity ->
+                        responseEntity.getStatusCode() == HttpStatus.CREATED &&
+                                responseEntity.getBody() != null &&
+                                responseEntity.getBody().hasLinks()
                 )
                 .verifyComplete();
     }
-    
+
     @Test
     void updatePedido_WhenExists_ShouldReturnUpdatedWithLinks() {
         when(mapper.toDomain(1L, request)).thenReturn(pedido);
         when(pedidoUseCase.update(1L, pedido)).thenReturn(Mono.just(pedido));
         when(mapper.toResponse(pedido)).thenReturn(response);
-        
+
         StepVerifier.create(pedidoController.updatePedido(1L, request))
-                .expectNextMatches(responseEntity -> 
-                    responseEntity.getStatusCode() == HttpStatus.OK &&
-                    responseEntity.getBody() != null &&
-                    responseEntity.getBody().hasLinks()
+                .expectNextMatches(responseEntity ->
+                        responseEntity.getStatusCode() == HttpStatus.OK &&
+                                responseEntity.getBody() != null &&
+                                responseEntity.getBody().hasLinks()
                 )
                 .verifyComplete();
     }
-    
+
     @Test
     void updatePedido_WhenNotExists_ShouldReturnNotFound() {
         when(mapper.toDomain(1L, request)).thenReturn(pedido);
         when(pedidoUseCase.update(1L, pedido)).thenReturn(Mono.empty());
-        
+
         StepVerifier.create(pedidoController.updatePedido(1L, request))
-                .expectNextMatches(responseEntity -> 
-                    responseEntity.getStatusCode() == HttpStatus.NOT_FOUND
+                .expectNextMatches(responseEntity ->
+                        responseEntity.getStatusCode() == HttpStatus.NOT_FOUND
                 )
                 .verifyComplete();
     }
-    
+
     @Test
     void deletePedido_ShouldReturnNoContent() {
         when(pedidoUseCase.deleteById(1L)).thenReturn(Mono.empty());
-        
+
         StepVerifier.create(pedidoController.deletePedido(1L))
-                .expectNextMatches(responseEntity -> 
-                    responseEntity.getStatusCode() == HttpStatus.NO_CONTENT
+                .expectNextMatches(responseEntity ->
+                        responseEntity.getStatusCode() == HttpStatus.NO_CONTENT
                 )
                 .verifyComplete();
     }
-    
-    @Test
-    void buscarPorEstado_ShouldReturnCollectionWithLinks() {
-        when(pedidoUseCase.findByEstado(true)).thenReturn(Flux.just(pedido));
-        when(mapper.toResponse(pedido)).thenReturn(response);
-        
-        StepVerifier.create(pedidoController.buscarPorEstado(true))
-                .expectNextMatches(responseEntity -> {
-                    CollectionModel<PedidoResponse> body = responseEntity.getBody();
-                    return responseEntity.getStatusCode() == HttpStatus.OK &&
-                           body != null && 
-                           body.hasLinks();
-                })
-                .verifyComplete();
-    }
+
+
 }
