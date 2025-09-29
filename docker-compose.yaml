@@ -1,11 +1,37 @@
 services:
   mysql:
-    container_name: 'guide-mysql'
-    image: 'mysql:latest'
+    container_name: guide-mysql
+    image: mysql:8.0
     environment:
-      - 'MYSQL_DATABASE=mydatabase'
-      - 'MYSQL_PASSWORD=secret'
-      - 'MYSQL_ROOT_PASSWORD=verysecret'
-      - 'MYSQL_USER=myuser'
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: verysecret
     ports:
-      - '3306:3306'
+      - "3306:3306"
+    volumes:
+      - mysql-service-data:/var/lib/mysql
+    networks:
+      - ibk-network
+
+  app:
+    container_name: guide-app
+    build:
+      context: .   # mismo nivel donde está tu Dockerfile
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+    environment:
+      MYSQL: r2dbc:mysql://mysql:3306/mydatabase
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: secret
+    ports:
+      - "8080:8080"
+    networks:
+      - ibk-network
+
+volumes:
+  mysql-service-data:
+
+networks:
+  ibk-network:
