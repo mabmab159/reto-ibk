@@ -1,9 +1,9 @@
 package mabmab.retoibk.reto.infrastructure.controller;
 
-import mabmab.retoibk.reto.application.ports.ProductoUseCasePort;
+import mabmab.retoibk.reto.application.usecases.interfaces.IProductoUseCase;
 import mabmab.retoibk.reto.domain.models.Producto;
-import mabmab.retoibk.reto.infrastructure.controller.dto.ProductoRequest;
-import mabmab.retoibk.reto.infrastructure.controller.dto.ProductoResponse;
+import mabmab.retoibk.reto.infrastructure.controller.dto.request.ProductoRequest;
+import mabmab.retoibk.reto.infrastructure.controller.dto.response.ProductoResponse;
 import mabmab.retoibk.reto.infrastructure.controller.mappers.ProductoControllerMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 class ProductoControllerTest {
 
     @Mock
-    private ProductoUseCasePort productoUseCase;
+    private IProductoUseCase productoUseCase;
 
     @Mock
     private ProductoControllerMapper mapper;

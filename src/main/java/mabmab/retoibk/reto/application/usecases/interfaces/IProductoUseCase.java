@@ -1,11 +1,11 @@
-package mabmab.retoibk.reto.domain.ports.out;
+package mabmab.retoibk.reto.application.usecases.interfaces;
 
 import mabmab.retoibk.reto.domain.models.Producto;
 import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface ProductoRepositoryPort {
+public interface IProductoUseCase {
     Flux<Producto> findAll();
 
     Flux<Producto> findAll(Pageable pageable);
@@ -14,7 +14,7 @@ public interface ProductoRepositoryPort {
 
     Mono<Producto> save(Producto producto);
 
-    Mono<Void> deleteById(Long id);
+    Mono<Producto> update(Long id, Producto producto);
 
-    Flux<Producto> findByNombreContainingIgnoreCase(String nombre);
+    Mono<Void> deleteById(Long id);
 }

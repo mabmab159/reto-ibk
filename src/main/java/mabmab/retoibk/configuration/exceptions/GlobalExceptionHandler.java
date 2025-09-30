@@ -3,7 +3,7 @@ package mabmab.retoibk.configuration.exceptions;
 import lombok.extern.slf4j.Slf4j;
 import mabmab.retoibk.reto.domain.exceptions.ConcurrenciaException;
 import mabmab.retoibk.reto.domain.exceptions.StockInsuficienteException;
-import mabmab.retoibk.reto.infrastructure.controller.dto.ErrorResponse;
+import mabmab.retoibk.reto.infrastructure.controller.dto.response.ErrorResponse;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,5 +1,7 @@
 package mabmab.retoibk.reto.infrastructure.controller.dto;
 
+import mabmab.retoibk.reto.infrastructure.controller.dto.response.PedidoItemResponse;
+import mabmab.retoibk.reto.infrastructure.controller.dto.response.PedidoResponse;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

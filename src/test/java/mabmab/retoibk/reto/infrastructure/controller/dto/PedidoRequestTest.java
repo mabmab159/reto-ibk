@@ -1,5 +1,7 @@
 package mabmab.retoibk.reto.infrastructure.controller.dto;
 
+import mabmab.retoibk.reto.infrastructure.controller.dto.request.PedidoItemRequest;
+import mabmab.retoibk.reto.infrastructure.controller.dto.request.PedidoRequest;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

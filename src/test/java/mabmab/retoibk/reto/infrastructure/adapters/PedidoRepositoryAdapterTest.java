@@ -2,7 +2,6 @@ package mabmab.retoibk.reto.infrastructure.adapters;
 
 import mabmab.retoibk.reto.domain.models.Pedido;
 import mabmab.retoibk.reto.infrastructure.dataproviders.entities.PedidoEntity;
-import mabmab.retoibk.reto.infrastructure.dataproviders.entities.PedidoItemEntity;
 import mabmab.retoibk.reto.infrastructure.dataproviders.mappers.PedidoMapper;
 import mabmab.retoibk.reto.infrastructure.dataproviders.repositories.PedidoItemRepository;
 import mabmab.retoibk.reto.infrastructure.dataproviders.repositories.PedidoRepository;
@@ -29,7 +28,7 @@ class PedidoRepositoryAdapterTest {
 
     @Mock
     private PedidoRepository pedidoRepository;
-    
+
     @Mock
     private PedidoItemRepository pedidoItemRepository;
 
@@ -37,7 +36,7 @@ class PedidoRepositoryAdapterTest {
     private PedidoMapper pedidoMapper;
 
     @InjectMocks
-    private PedidoRepositoryAdapter pedidoRepositoryAdapter;
+    private IPedidoRepositoryAdapter pedidoRepositoryAdapter;
 
     private Pedido pedido;
     private PedidoEntity pedidoEntity;
@@ -117,20 +116,6 @@ class PedidoRepositoryAdapterTest {
                 .verifyComplete();
 
         verify(pedidoRepository).findAllBy(pageable);
-        verify(pedidoItemRepository).findByPedidoId(1L);
-    }
-
-    @Test
-    void findByEstado_ShouldReturnPedidosByEstado() {
-        when(pedidoRepository.findByEstado(true)).thenReturn(Flux.just(pedidoEntity));
-        when(pedidoItemRepository.findByPedidoId(1L)).thenReturn(Flux.empty());
-        when(pedidoMapper.toDomain(pedidoEntity)).thenReturn(pedido);
-
-        StepVerifier.create(pedidoRepositoryAdapter.findByEstado(true))
-                .expectNext(pedido)
-                .verifyComplete();
-
-        verify(pedidoRepository).findByEstado(true);
         verify(pedidoItemRepository).findByPedidoId(1L);
     }
 }

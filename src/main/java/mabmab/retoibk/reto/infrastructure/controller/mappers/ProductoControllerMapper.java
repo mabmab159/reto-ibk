@@ -1,8 +1,8 @@
 package mabmab.retoibk.reto.infrastructure.controller.mappers;
 
 import mabmab.retoibk.reto.domain.models.Producto;
-import mabmab.retoibk.reto.infrastructure.controller.dto.ProductoRequest;
-import mabmab.retoibk.reto.infrastructure.controller.dto.ProductoResponse;
+import mabmab.retoibk.reto.infrastructure.controller.dto.request.ProductoRequest;
+import mabmab.retoibk.reto.infrastructure.controller.dto.response.ProductoResponse;
 import org.springframework.stereotype.Component;
 
 @Component

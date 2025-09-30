@@ -3,22 +3,14 @@ package mabmab.retoibk.reto.infrastructure.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mabmab.retoibk.configuration.documentation.ProductoControllerApi;
-import mabmab.retoibk.reto.application.ports.ProductoUseCasePort;
-import mabmab.retoibk.reto.infrastructure.controller.dto.ProductoRequest;
-import mabmab.retoibk.reto.infrastructure.controller.dto.ProductoResponse;
+import mabmab.retoibk.reto.application.usecases.interfaces.IProductoUseCase;
+import mabmab.retoibk.reto.infrastructure.controller.dto.request.ProductoRequest;
+import mabmab.retoibk.reto.infrastructure.controller.dto.response.ProductoResponse;
 import mabmab.retoibk.reto.infrastructure.controller.mappers.ProductoControllerMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -26,7 +18,7 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/productos")
 @RequiredArgsConstructor
 public class ProductoController implements ProductoControllerApi {
-    private final ProductoUseCasePort productoUseCase;
+    private final IProductoUseCase productoUseCase;
     private final ProductoControllerMapper mapper;
 
     @GetMapping
@@ -65,6 +57,5 @@ public class ProductoController implements ProductoControllerApi {
         return productoUseCase.deleteById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
-
 
 }

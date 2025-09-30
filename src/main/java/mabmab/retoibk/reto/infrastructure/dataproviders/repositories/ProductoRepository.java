@@ -8,7 +8,5 @@ import reactor.core.publisher.Flux;
 
 @Repository
 public interface ProductoRepository extends R2dbcRepository<ProductoEntity, Long> {
-    Flux<ProductoEntity> findByNombreContainingIgnoreCase(String nombre);
-
     Flux<ProductoEntity> findAllBy(Pageable pageable);
 }

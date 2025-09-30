@@ -1,9 +1,9 @@
 package mabmab.retoibk.reto.infrastructure.controller.mappers;
 
 import mabmab.retoibk.reto.domain.models.Pedido;
-import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoItemRequest;
-import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoRequest;
-import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoResponse;
+import mabmab.retoibk.reto.infrastructure.controller.dto.request.PedidoItemRequest;
+import mabmab.retoibk.reto.infrastructure.controller.dto.request.PedidoRequest;
+import mabmab.retoibk.reto.infrastructure.controller.dto.response.PedidoResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

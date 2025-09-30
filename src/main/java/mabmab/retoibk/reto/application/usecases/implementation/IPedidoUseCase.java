@@ -1,9 +1,8 @@
-package mabmab.retoibk.reto.application.usecases;
+package mabmab.retoibk.reto.application.usecases.implementation;
 
 import lombok.RequiredArgsConstructor;
-import mabmab.retoibk.reto.application.ports.PedidoUseCasePort;
 import mabmab.retoibk.reto.domain.models.Pedido;
-import mabmab.retoibk.reto.domain.services.PedidoService;
+import mabmab.retoibk.reto.domain.ports.in.IPedidoServicePort;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -11,9 +10,9 @@ import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
-public class PedidoUseCase implements PedidoUseCasePort {
+public class IPedidoUseCase implements mabmab.retoibk.reto.application.usecases.interfaces.IPedidoUseCase {
 
-    private final PedidoService pedidoService;
+    private final IPedidoServicePort pedidoService;
 
     @Override
     public Flux<Pedido> findAll() {
@@ -44,11 +43,4 @@ public class PedidoUseCase implements PedidoUseCasePort {
     public Flux<Pedido> findAll(Pageable pageable) {
         return pedidoService.findAll(pageable);
     }
-
-    @Override
-    public Flux<Pedido> findByEstado(boolean estado) {
-        return pedidoService.findByEstado(estado);
-    }
-
-
 }

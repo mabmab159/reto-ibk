@@ -1,22 +1,113 @@
 package mabmab.retoibk.reto.domain.services;
 
+import lombok.RequiredArgsConstructor;
+import mabmab.retoibk.reto.domain.exceptions.ConcurrenciaException;
 import mabmab.retoibk.reto.domain.models.Pedido;
+import mabmab.retoibk.reto.domain.ports.in.IPedidoServicePort;
+import mabmab.retoibk.reto.domain.ports.out.IPedidoRepositoryPort;
+import mabmab.retoibk.reto.domain.ports.out.IProductoRepositoryPort;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
-public interface PedidoService {
-    Flux<Pedido> findAll();
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
 
-    Flux<Pedido> findAll(Pageable pageable);
+@Service
+@RequiredArgsConstructor
+public class PedidoService implements IPedidoServicePort {
 
-    Mono<Pedido> findById(Long id);
+    private final IPedidoRepositoryPort iPedidoRepositoryPort;
+    private final IProductoRepositoryPort iProductoRepositoryPort;
+    private final DescuentoService descuentoService;
+    private final StockService stockService;
+    private final TransactionalOperator transactionalOperator;
 
-    Mono<Pedido> save(Pedido pedido);
+    @Override
+    public Flux<Pedido> findAll() {
+        return iPedidoRepositoryPort.findAll();
+    }
 
-    Mono<Pedido> update(Long id, Pedido pedido);
+    @Override
+    public Mono<Pedido> findById(Long id) {
+        if (id == null) {
+            return Mono.error(new IllegalArgumentException("ID cannot be null"));
+        }
+        return iPedidoRepositoryPort.findById(id);
+    }
 
-    Mono<Void> deleteById(Long id);
+    @Override
+    public Mono<Pedido> save(Pedido pedido) {
+        if (pedido.getFecha() == null) {
+            pedido.setFecha(LocalDate.now());
+        }
 
-    Flux<Pedido> findByEstado(boolean estado);
+        return stockService.validarYReservarStock(pedido.getItems())
+                .then(calcularTotalConItems(pedido))
+                .flatMap(iPedidoRepositoryPort::save)
+                .as(transactionalOperator::transactional)
+                .retryWhen(Retry.backoff(3, Duration.ofMillis(100))
+                        .filter(OptimisticLockingFailureException.class::isInstance))
+                .onErrorMap(OptimisticLockingFailureException.class,
+                        ex -> new ConcurrenciaException("Error de concurrencia al procesar pedido"));
+    }
+
+    @Override
+    @Transactional
+    public Mono<Pedido> update(Long id, Pedido pedido) {
+        if (id == null) {
+            return Mono.error(new IllegalArgumentException("ID cannot be null"));
+        }
+        return iPedidoRepositoryPort.findById(id)
+                .flatMap(existing -> {
+                    if (existing.isEstado()) {
+                        return Mono.error(new RuntimeException("No se puede modificar un pedido confirmado"));
+                    }
+                    existing.setFecha(pedido.getFecha());
+                    existing.setEstado(pedido.isEstado());
+                    existing.setItems(pedido.getItems());
+                    return calcularTotalConItems(existing);
+                })
+                .flatMap(iPedidoRepositoryPort::save);
+    }
+
+    @Override
+    public Mono<Void> deleteById(Long id) {
+        return iPedidoRepositoryPort.deleteById(id);
+    }
+
+    @Override
+    public Flux<Pedido> findAll(Pageable pageable) {
+        return iPedidoRepositoryPort.findAll(pageable);
+    }
+
+    private Mono<Pedido> calcularTotalConItems(Pedido pedido) {
+        if (pedido.getItems() == null || pedido.getItems().isEmpty()) {
+            pedido.setTotal(BigDecimal.ZERO);
+            return Mono.just(pedido);
+        }
+
+        return Flux.fromIterable(pedido.getItems())
+                .flatMap(item ->
+                        iProductoRepositoryPort.findById(item.getProductoId())
+                                .map(producto -> {
+                                    item.setPrecioUnitario(producto.getPrecio());
+                                    item.setSubtotal(producto.getPrecio().multiply(BigDecimal.valueOf(item.getCantidad())));
+                                    return item;
+                                })
+                )
+                .collectList()
+                .map(items -> {
+                    pedido.setItems(items);
+                    BigDecimal totalConDescuento = descuentoService.calcularTotal(pedido);
+                    pedido.setTotal(totalConDescuento);
+                    return pedido;
+                });
+    }
 }

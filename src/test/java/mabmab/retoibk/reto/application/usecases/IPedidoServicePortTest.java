@@ -1,5 +1,6 @@
 package mabmab.retoibk.reto.application.usecases;
 
+import mabmab.retoibk.reto.application.usecases.implementation.IPedidoUseCase;
 import mabmab.retoibk.reto.domain.models.Pedido;
 import mabmab.retoibk.reto.domain.services.PedidoService;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,13 +22,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class PedidoUseCaseTest {
+class IPedidoServicePortTest {
 
     @Mock
     private PedidoService pedidoService;
 
     @InjectMocks
-    private PedidoUseCase pedidoUseCase;
+    private IPedidoUseCase pedidoUseCase;
 
     private Pedido pedido;
 
@@ -101,17 +102,4 @@ class PedidoUseCaseTest {
 
         verify(pedidoService).findAll(pageable);
     }
-
-    @Test
-    void findByEstado_ShouldReturnPedidosByEstado() {
-        when(pedidoService.findByEstado(true)).thenReturn(Flux.just(pedido));
-
-        StepVerifier.create(pedidoUseCase.findByEstado(true))
-                .expectNext(pedido)
-                .verifyComplete();
-
-        verify(pedidoService).findByEstado(true);
-    }
-    
-
 }

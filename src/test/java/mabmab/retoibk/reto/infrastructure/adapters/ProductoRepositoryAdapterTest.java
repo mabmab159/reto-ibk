@@ -31,7 +31,7 @@ class ProductoRepositoryAdapterTest {
     private ProductoMapper productoMapper;
 
     @InjectMocks
-    private ProductoRepositoryAdapter productoRepositoryAdapter;
+    private IProductoRepositoryAdapter productoRepositoryAdapter;
 
     private Producto producto;
     private ProductoEntity productoEntity;
@@ -108,19 +108,6 @@ class ProductoRepositoryAdapterTest {
                 .verifyComplete();
 
         verify(productoRepository).findAllBy(pageable);
-        verify(productoMapper).toDomain(productoEntity);
-    }
-
-    @Test
-    void findByNombreContainingIgnoreCase_ShouldReturnProductosByNombre() {
-        when(productoRepository.findByNombreContainingIgnoreCase("Laptop")).thenReturn(Flux.just(productoEntity));
-        when(productoMapper.toDomain(productoEntity)).thenReturn(producto);
-
-        StepVerifier.create(productoRepositoryAdapter.findByNombreContainingIgnoreCase("Laptop"))
-                .expectNext(producto)
-                .verifyComplete();
-
-        verify(productoRepository).findByNombreContainingIgnoreCase("Laptop");
         verify(productoMapper).toDomain(productoEntity);
     }
 }

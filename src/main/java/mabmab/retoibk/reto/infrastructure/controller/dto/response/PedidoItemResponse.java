@@ -1,4 +1,4 @@
-package mabmab.retoibk.reto.infrastructure.controller.dto;
+package mabmab.retoibk.reto.infrastructure.controller.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,6 +1,7 @@
 package mabmab.retoibk.reto.domain.services;
 
 import mabmab.retoibk.reto.domain.models.Pedido;
+import mabmab.retoibk.reto.domain.models.PedidoItem;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -41,7 +42,7 @@ public class DescuentoService {
         }
 
         return pedido.getItems().stream()
-                .map(item -> item.getSubtotal())
+                .map(PedidoItem::getSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

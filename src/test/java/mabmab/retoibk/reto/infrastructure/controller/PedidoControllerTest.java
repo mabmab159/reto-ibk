@@ -1,11 +1,11 @@
 package mabmab.retoibk.reto.infrastructure.controller;
 
-import mabmab.retoibk.reto.application.ports.PedidoUseCasePort;
+import mabmab.retoibk.reto.application.usecases.interfaces.IPedidoUseCase;
 import mabmab.retoibk.reto.domain.models.Pedido;
-import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoItemRequest;
-import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoItemResponse;
-import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoRequest;
-import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoResponse;
+import mabmab.retoibk.reto.infrastructure.controller.dto.request.PedidoItemRequest;
+import mabmab.retoibk.reto.infrastructure.controller.dto.response.PedidoItemResponse;
+import mabmab.retoibk.reto.infrastructure.controller.dto.request.PedidoRequest;
+import mabmab.retoibk.reto.infrastructure.controller.dto.response.PedidoResponse;
 import mabmab.retoibk.reto.infrastructure.controller.mappers.PedidoControllerMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 class PedidoControllerTest {
 
     @Mock
-    private PedidoUseCasePort pedidoUseCase;
+    private IPedidoUseCase pedidoUseCase;
 
     @Mock
     private PedidoControllerMapper mapper;

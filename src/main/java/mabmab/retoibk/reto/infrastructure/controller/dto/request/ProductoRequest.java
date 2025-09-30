@@ -1,4 +1,4 @@
-package mabmab.retoibk.reto.infrastructure.controller.dto;
+package mabmab.retoibk.reto.infrastructure.controller.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

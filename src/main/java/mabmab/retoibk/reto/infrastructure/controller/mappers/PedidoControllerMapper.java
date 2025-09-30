@@ -2,10 +2,10 @@ package mabmab.retoibk.reto.infrastructure.controller.mappers;
 
 import mabmab.retoibk.reto.domain.models.Pedido;
 import mabmab.retoibk.reto.domain.models.PedidoItem;
-import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoItemRequest;
-import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoItemResponse;
-import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoRequest;
-import mabmab.retoibk.reto.infrastructure.controller.dto.PedidoResponse;
+import mabmab.retoibk.reto.infrastructure.controller.dto.request.PedidoItemRequest;
+import mabmab.retoibk.reto.infrastructure.controller.dto.request.PedidoRequest;
+import mabmab.retoibk.reto.infrastructure.controller.dto.response.PedidoItemResponse;
+import mabmab.retoibk.reto.infrastructure.controller.dto.response.PedidoResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class PedidoControllerMapper {
                 pedido.getItems().stream()
                         .map(this::toItemResponse)
                         .collect(Collectors.toList()) : null;
-        
+
         return new PedidoResponse(
                 pedido.getId(),
                 pedido.getFecha(),
@@ -34,7 +34,7 @@ public class PedidoControllerMapper {
                 request.getItems().stream()
                         .map(this::toItemDomain)
                         .collect(Collectors.toList()) : null;
-        
+
         return new Pedido(
                 null,
                 request.getFecha(),
@@ -50,7 +50,7 @@ public class PedidoControllerMapper {
                 request.getItems().stream()
                         .map(this::toItemDomain)
                         .collect(Collectors.toList()) : null;
-        
+
         return new Pedido(
                 id,
                 request.getFecha(),
@@ -60,7 +60,7 @@ public class PedidoControllerMapper {
                 null
         );
     }
-    
+
     private PedidoItemResponse toItemResponse(PedidoItem item) {
         return new PedidoItemResponse(
                 item.getId(),
@@ -71,7 +71,7 @@ public class PedidoControllerMapper {
                 item.getSubtotal()
         );
     }
-    
+
     private PedidoItem toItemDomain(PedidoItemRequest request) {
         return new PedidoItem(
                 null,

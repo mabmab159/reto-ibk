@@ -3,8 +3,8 @@ package mabmab.retoibk.reto.domain.services;
 import mabmab.retoibk.reto.domain.models.Pedido;
 import mabmab.retoibk.reto.domain.models.PedidoItem;
 import mabmab.retoibk.reto.domain.models.Producto;
-import mabmab.retoibk.reto.domain.ports.out.PedidoRepositoryPort;
-import mabmab.retoibk.reto.domain.ports.out.ProductoRepositoryPort;
+import mabmab.retoibk.reto.domain.ports.out.IPedidoRepositoryPort;
+import mabmab.retoibk.reto.domain.ports.out.IProductoRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,31 +21,28 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class PedidoServiceImplTest {
+class PedidoServiceTest {
 
     @Mock
-    private PedidoRepositoryPort pedidoRepositoryPort;
-    
+    private IPedidoRepositoryPort iPedidoRepositoryPort;
+
     @Mock
-    private ProductoRepositoryPort productoRepositoryPort;
-    
+    private IProductoRepositoryPort iProductoRepositoryPort;
+
     @Mock
     private DescuentoService descuentoService;
-    
+
     @Mock
     private StockService stockService;
-    
+
     @Mock
     private org.springframework.transaction.reactive.TransactionalOperator transactionalOperator;
 
     @InjectMocks
-    private PedidoServiceImpl pedidoService;
+    private PedidoService pedidoService;
 
     private Pedido pedido;
     private Pedido existingPedido;
@@ -62,32 +59,32 @@ class PedidoServiceImplTest {
 
     @Test
     void findAll_ShouldReturnAllPedidos() {
-        when(pedidoRepositoryPort.findAll()).thenReturn(Flux.just(pedido));
+        when(iPedidoRepositoryPort.findAll()).thenReturn(Flux.just(pedido));
 
         StepVerifier.create(pedidoService.findAll())
                 .expectNext(pedido)
                 .verifyComplete();
 
-        verify(pedidoRepositoryPort).findAll();
+        verify(iPedidoRepositoryPort).findAll();
     }
 
     @Test
     void findById_ShouldReturnPedido() {
-        when(pedidoRepositoryPort.findById(1L)).thenReturn(Mono.just(pedido));
+        when(iPedidoRepositoryPort.findById(1L)).thenReturn(Mono.just(pedido));
 
         StepVerifier.create(pedidoService.findById(1L))
                 .expectNext(pedido)
                 .verifyComplete();
 
-        verify(pedidoRepositoryPort).findById(1L);
+        verify(iPedidoRepositoryPort).findById(1L);
     }
 
     @Test
     void save_ShouldSavePedido() {
         when(stockService.validarYReservarStock(any())).thenReturn(Mono.empty());
-        when(productoRepositoryPort.findById(1L)).thenReturn(Mono.just(producto));
+        when(iProductoRepositoryPort.findById(1L)).thenReturn(Mono.just(producto));
         when(descuentoService.calcularTotal(any(Pedido.class))).thenReturn(new BigDecimal("180"));
-        when(pedidoRepositoryPort.save(any(Pedido.class))).thenReturn(Mono.just(pedido));
+        when(iPedidoRepositoryPort.save(any(Pedido.class))).thenReturn(Mono.just(pedido));
         when(transactionalOperator.<Pedido>transactional(any(Mono.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         StepVerifier.create(pedidoService.save(pedido))
@@ -95,67 +92,54 @@ class PedidoServiceImplTest {
                 .verifyComplete();
 
         verify(stockService).validarYReservarStock(any());
-        verify(pedidoRepositoryPort).save(any(Pedido.class));
+        verify(iPedidoRepositoryPort).save(any(Pedido.class));
         verify(descuentoService).calcularTotal(any(Pedido.class));
     }
 
     @Test
     void update_WhenPedidoExists_ShouldUpdateAndSave() {
-        when(pedidoRepositoryPort.findById(1L)).thenReturn(Mono.just(existingPedido));
-        when(productoRepositoryPort.findById(1L)).thenReturn(Mono.just(producto));
-        when(pedidoRepositoryPort.save(any(Pedido.class))).thenReturn(Mono.just(pedido));
+        when(iPedidoRepositoryPort.findById(1L)).thenReturn(Mono.just(existingPedido));
+        when(iProductoRepositoryPort.findById(1L)).thenReturn(Mono.just(producto));
+        when(iPedidoRepositoryPort.save(any(Pedido.class))).thenReturn(Mono.just(pedido));
 
         StepVerifier.create(pedidoService.update(1L, pedido))
                 .expectNextMatches(updated -> updated.getFecha().equals(pedido.getFecha()))
                 .verifyComplete();
 
-        verify(pedidoRepositoryPort).findById(1L);
-        verify(pedidoRepositoryPort).save(any(Pedido.class));
+        verify(iPedidoRepositoryPort).findById(1L);
+        verify(iPedidoRepositoryPort).save(any(Pedido.class));
     }
 
     @Test
     void update_WhenPedidoNotExists_ShouldReturnEmpty() {
-        when(pedidoRepositoryPort.findById(1L)).thenReturn(Mono.empty());
+        when(iPedidoRepositoryPort.findById(1L)).thenReturn(Mono.empty());
 
         StepVerifier.create(pedidoService.update(1L, pedido))
                 .verifyComplete();
 
-        verify(pedidoRepositoryPort).findById(1L);
-        verify(pedidoRepositoryPort, never()).save(any());
+        verify(iPedidoRepositoryPort).findById(1L);
+        verify(iPedidoRepositoryPort, never()).save(any());
     }
 
     @Test
     void deleteById_ShouldDeletePedido() {
-        when(pedidoRepositoryPort.deleteById(1L)).thenReturn(Mono.empty());
+        when(iPedidoRepositoryPort.deleteById(1L)).thenReturn(Mono.empty());
 
         StepVerifier.create(pedidoService.deleteById(1L))
                 .verifyComplete();
 
-        verify(pedidoRepositoryPort).deleteById(1L);
+        verify(iPedidoRepositoryPort).deleteById(1L);
     }
 
     @Test
     void findAllWithPageable_ShouldReturnPagedPedidos() {
         Pageable pageable = PageRequest.of(0, 10);
-        when(pedidoRepositoryPort.findAll(pageable)).thenReturn(Flux.just(pedido));
+        when(iPedidoRepositoryPort.findAll(pageable)).thenReturn(Flux.just(pedido));
 
         StepVerifier.create(pedidoService.findAll(pageable))
                 .expectNext(pedido)
                 .verifyComplete();
 
-        verify(pedidoRepositoryPort).findAll(pageable);
+        verify(iPedidoRepositoryPort).findAll(pageable);
     }
-
-    @Test
-    void findByEstado_ShouldReturnPedidosByEstado() {
-        when(pedidoRepositoryPort.findByEstado(true)).thenReturn(Flux.just(pedido));
-
-        StepVerifier.create(pedidoService.findByEstado(true))
-                .expectNext(pedido)
-                .verifyComplete();
-
-        verify(pedidoRepositoryPort).findByEstado(true);
-    }
-    
-
 }

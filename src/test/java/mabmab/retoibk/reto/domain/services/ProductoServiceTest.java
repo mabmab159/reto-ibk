@@ -1,7 +1,7 @@
 package mabmab.retoibk.reto.domain.services;
 
 import mabmab.retoibk.reto.domain.models.Producto;
-import mabmab.retoibk.reto.domain.ports.out.ProductoRepositoryPort;
+import mabmab.retoibk.reto.domain.ports.out.IProductoRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,13 +22,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ProductoServiceImplTest {
+class ProductoServiceTest {
 
     @Mock
-    private ProductoRepositoryPort productoRepositoryPort;
+    private IProductoRepositoryPort IProductoRepositoryPort;
 
     @InjectMocks
-    private ProductoServiceImpl productoService;
+    private ProductoService productoService;
 
     private Producto producto;
     private Producto existingProducto;
@@ -41,41 +41,41 @@ class ProductoServiceImplTest {
 
     @Test
     void findAll_ShouldReturnAllProductos() {
-        when(productoRepositoryPort.findAll()).thenReturn(Flux.just(producto));
+        when(IProductoRepositoryPort.findAll()).thenReturn(Flux.just(producto));
 
         StepVerifier.create(productoService.findAll())
                 .expectNext(producto)
                 .verifyComplete();
 
-        verify(productoRepositoryPort).findAll();
+        verify(IProductoRepositoryPort).findAll();
     }
 
     @Test
     void findById_ShouldReturnProducto() {
-        when(productoRepositoryPort.findById(1L)).thenReturn(Mono.just(producto));
+        when(IProductoRepositoryPort.findById(1L)).thenReturn(Mono.just(producto));
 
         StepVerifier.create(productoService.findById(1L))
                 .expectNext(producto)
                 .verifyComplete();
 
-        verify(productoRepositoryPort).findById(1L);
+        verify(IProductoRepositoryPort).findById(1L);
     }
 
     @Test
     void save_ShouldSaveProducto() {
-        when(productoRepositoryPort.save(producto)).thenReturn(Mono.just(producto));
+        when(IProductoRepositoryPort.save(producto)).thenReturn(Mono.just(producto));
 
         StepVerifier.create(productoService.save(producto))
                 .expectNext(producto)
                 .verifyComplete();
 
-        verify(productoRepositoryPort).save(producto);
+        verify(IProductoRepositoryPort).save(producto);
     }
 
     @Test
     void update_WhenProductoExists_ShouldUpdateAndSave() {
-        when(productoRepositoryPort.findById(1L)).thenReturn(Mono.just(existingProducto));
-        when(productoRepositoryPort.save(any(Producto.class))).thenReturn(Mono.just(producto));
+        when(IProductoRepositoryPort.findById(1L)).thenReturn(Mono.just(existingProducto));
+        when(IProductoRepositoryPort.save(any(Producto.class))).thenReturn(Mono.just(producto));
 
         StepVerifier.create(productoService.update(1L, producto))
                 .expectNextMatches(updated ->
@@ -85,41 +85,41 @@ class ProductoServiceImplTest {
                 )
                 .verifyComplete();
 
-        verify(productoRepositoryPort).findById(1L);
-        verify(productoRepositoryPort).save(any(Producto.class));
+        verify(IProductoRepositoryPort).findById(1L);
+        verify(IProductoRepositoryPort).save(any(Producto.class));
     }
 
     @Test
     void update_WhenProductoNotExists_ShouldReturnEmpty() {
-        when(productoRepositoryPort.findById(1L)).thenReturn(Mono.empty());
+        when(IProductoRepositoryPort.findById(1L)).thenReturn(Mono.empty());
 
         StepVerifier.create(productoService.update(1L, producto))
                 .verifyComplete();
 
-        verify(productoRepositoryPort).findById(1L);
-        verify(productoRepositoryPort, never()).save(any());
+        verify(IProductoRepositoryPort).findById(1L);
+        verify(IProductoRepositoryPort, never()).save(any());
     }
 
     @Test
     void deleteById_ShouldDeleteProducto() {
-        when(productoRepositoryPort.deleteById(1L)).thenReturn(Mono.empty());
+        when(IProductoRepositoryPort.deleteById(1L)).thenReturn(Mono.empty());
 
         StepVerifier.create(productoService.deleteById(1L))
                 .verifyComplete();
 
-        verify(productoRepositoryPort).deleteById(1L);
+        verify(IProductoRepositoryPort).deleteById(1L);
     }
 
     @Test
     void findAllWithPageable_ShouldReturnPagedProductos() {
         Pageable pageable = PageRequest.of(0, 10);
-        when(productoRepositoryPort.findAll(pageable)).thenReturn(Flux.just(producto));
+        when(IProductoRepositoryPort.findAll(pageable)).thenReturn(Flux.just(producto));
 
         StepVerifier.create(productoService.findAll(pageable))
                 .expectNext(producto)
                 .verifyComplete();
 
-        verify(productoRepositoryPort).findAll(pageable);
+        verify(IProductoRepositoryPort).findAll(pageable);
     }
 
 

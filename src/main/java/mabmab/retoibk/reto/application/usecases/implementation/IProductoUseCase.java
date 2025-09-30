@@ -1,9 +1,8 @@
-package mabmab.retoibk.reto.application.usecases;
+package mabmab.retoibk.reto.application.usecases.implementation;
 
 import lombok.RequiredArgsConstructor;
-import mabmab.retoibk.reto.application.ports.ProductoUseCasePort;
 import mabmab.retoibk.reto.domain.models.Producto;
-import mabmab.retoibk.reto.domain.services.ProductoService;
+import mabmab.retoibk.reto.domain.ports.in.IProductoServicePort;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -11,9 +10,9 @@ import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
-public class ProductoUseCase implements ProductoUseCasePort {
+public class IProductoUseCase implements mabmab.retoibk.reto.application.usecases.interfaces.IProductoUseCase {
 
-    private final ProductoService productoService;
+    private final IProductoServicePort productoService;
 
     @Override
     public Flux<Producto> findAll() {

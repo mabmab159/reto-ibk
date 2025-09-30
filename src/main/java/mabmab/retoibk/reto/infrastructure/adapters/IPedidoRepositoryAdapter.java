@@ -2,7 +2,8 @@ package mabmab.retoibk.reto.infrastructure.adapters;
 
 import lombok.RequiredArgsConstructor;
 import mabmab.retoibk.reto.domain.models.Pedido;
-import mabmab.retoibk.reto.domain.ports.out.PedidoRepositoryPort;
+import mabmab.retoibk.reto.domain.ports.out.IPedidoRepositoryPort;
+import mabmab.retoibk.reto.infrastructure.dataproviders.entities.PedidoEntity;
 import mabmab.retoibk.reto.infrastructure.dataproviders.mappers.PedidoMapper;
 import mabmab.retoibk.reto.infrastructure.dataproviders.repositories.PedidoItemRepository;
 import mabmab.retoibk.reto.infrastructure.dataproviders.repositories.PedidoRepository;
@@ -14,8 +15,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
-public class PedidoRepositoryAdapter implements PedidoRepositoryPort {
-
+public class IPedidoRepositoryAdapter implements IPedidoRepositoryPort {
     private final PedidoRepository pedidoRepository;
     private final PedidoItemRepository pedidoItemRepository;
     private final PedidoMapper pedidoMapper;
@@ -63,13 +63,7 @@ public class PedidoRepositoryAdapter implements PedidoRepositoryPort {
                 .flatMap(this::loadPedidoWithItems);
     }
 
-    @Override
-    public Flux<Pedido> findByEstado(boolean estado) {
-        return pedidoRepository.findByEstado(estado)
-                .flatMap(this::loadPedidoWithItems);
-    }
-    
-    private Mono<Pedido> loadPedidoWithItems(mabmab.retoibk.reto.infrastructure.dataproviders.entities.PedidoEntity entity) {
+    private Mono<Pedido> loadPedidoWithItems(PedidoEntity entity) {
         return pedidoItemRepository.findByPedidoId(entity.getId())
                 .map(pedidoMapper::toItemDomain)
                 .collectList()

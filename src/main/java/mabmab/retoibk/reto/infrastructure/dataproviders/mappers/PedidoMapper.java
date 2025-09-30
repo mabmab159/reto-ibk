@@ -16,12 +16,12 @@ public class PedidoMapper {
     public PedidoEntity toEntity(Pedido domain) {
         return new PedidoEntity(domain.getId(), domain.getFecha(), domain.getTotal(), domain.isEstado(), domain.getVersion());
     }
-    
+
     public PedidoItem toItemDomain(PedidoItemEntity entity) {
-        return new PedidoItem(entity.getId(), entity.getPedidoId(), entity.getProductoId(), 
+        return new PedidoItem(entity.getId(), entity.getPedidoId(), entity.getProductoId(),
                 entity.getCantidad(), entity.getPrecioUnitario(), entity.getSubtotal());
     }
-    
+
     public PedidoItemEntity toItemEntity(PedidoItem domain) {
         return new PedidoItemEntity(domain.getId(), domain.getPedidoId(), domain.getProductoId(),
                 domain.getCantidad(), domain.getPrecioUnitario(), domain.getSubtotal());

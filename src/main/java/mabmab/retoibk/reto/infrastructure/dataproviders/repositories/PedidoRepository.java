@@ -8,7 +8,5 @@ import reactor.core.publisher.Flux;
 
 @Repository
 public interface PedidoRepository extends R2dbcRepository<PedidoEntity, Long> {
-    Flux<PedidoEntity> findByEstado(boolean estado);
-
     Flux<PedidoEntity> findAllBy(Pageable pageable);
 }
