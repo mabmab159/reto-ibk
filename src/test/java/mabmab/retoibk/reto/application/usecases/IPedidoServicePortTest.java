@@ -1,6 +1,6 @@
 package mabmab.retoibk.reto.application.usecases;
 
-import mabmab.retoibk.reto.application.usecases.implementation.IPedidoUseCase;
+import mabmab.retoibk.reto.application.usecases.implementation.PedidoUseCase;
 import mabmab.retoibk.reto.domain.models.Pedido;
 import mabmab.retoibk.reto.domain.services.PedidoService;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,7 @@ class IPedidoServicePortTest {
     private PedidoService pedidoService;
 
     @InjectMocks
-    private IPedidoUseCase pedidoUseCase;
+    private PedidoUseCase pedidoUseCase;
 
     private Pedido pedido;
 

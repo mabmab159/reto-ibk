@@ -8,29 +8,6 @@ Sistema reactivo para la gestión de pedidos desarrollado con Spring Boot WebFlu
 
 El proyecto implementa *Arquitectura Hexagonal (Clean Architecture)* con las siguientes capas:
 
-### 📁 Estructura del Proyecto
-
-src/main/java/mabmab/retoibk/
-
-├── configuration/          # Configuraciones generales
-│   ├── documentation/      # Configuración de documentación API
-│   ├── exceptions/         # Manejo global de excepciones
-│   └── openapi/            # Configuración OpenAPI
-├── reto/
-│   ├── application/        # Capa de Aplicación
-│   │   ├── ports/          # Puertos de entrada
-│   │   └── usecases/       # Casos de uso
-│   ├── domain/             # Capa de Dominio
-│   │   ├── exceptions/     # Excepciones del dominio
-│   │   ├── models/         # Entidades del dominio
-│   │   ├── ports/          # Puertos del dominio
-│   │   └── services/       # Servicios del dominio
-│   └── infrastructure/     # Capa de Infraestructura
-│       ├── adapters/       # Adaptadores de repositorios
-│       ├── controller/     # Controladores REST
-│       └── dataproviders/  # Proveedores de datos
-
-
 ## 🛠 Configuración y Ejecución
 
 ### Prerrequisitos

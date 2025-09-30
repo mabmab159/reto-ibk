@@ -1,6 +1,7 @@
 package mabmab.retoibk.reto.application.usecases.implementation;
 
 import lombok.RequiredArgsConstructor;
+import mabmab.retoibk.reto.application.usecases.interfaces.IProductoUseCase;
 import mabmab.retoibk.reto.domain.models.Producto;
 import mabmab.retoibk.reto.domain.ports.in.IProductoServicePort;
 import org.springframework.data.domain.Pageable;
@@ -10,8 +11,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
-public class IProductoUseCase implements mabmab.retoibk.reto.application.usecases.interfaces.IProductoUseCase {
-
+public class ProductoUseCase implements IProductoUseCase {
     private final IProductoServicePort productoService;
 
     @Override

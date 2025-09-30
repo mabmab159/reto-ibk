@@ -1,6 +1,6 @@
 package mabmab.retoibk.reto.application.usecases;
 
-import mabmab.retoibk.reto.application.usecases.implementation.IProductoUseCase;
+import mabmab.retoibk.reto.application.usecases.implementation.ProductoUseCase;
 import mabmab.retoibk.reto.domain.models.Producto;
 import mabmab.retoibk.reto.domain.services.ProductoService;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +27,7 @@ class IProductoServicePortTest {
     private ProductoService productoService;
 
     @InjectMocks
-    private IProductoUseCase productoUseCase;
+    private ProductoUseCase productoUseCase;
 
     private Producto producto;
 

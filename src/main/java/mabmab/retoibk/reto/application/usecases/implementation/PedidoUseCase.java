@@ -1,6 +1,7 @@
 package mabmab.retoibk.reto.application.usecases.implementation;
 
 import lombok.RequiredArgsConstructor;
+import mabmab.retoibk.reto.application.usecases.interfaces.IPedidoUseCase;
 import mabmab.retoibk.reto.domain.models.Pedido;
 import mabmab.retoibk.reto.domain.ports.in.IPedidoServicePort;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +11,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
-public class IPedidoUseCase implements mabmab.retoibk.reto.application.usecases.interfaces.IPedidoUseCase {
+public class PedidoUseCase implements IPedidoUseCase {
 
     private final IPedidoServicePort pedidoService;
 
